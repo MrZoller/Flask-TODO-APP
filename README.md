@@ -1,79 +1,66 @@
 # Flask TODO Application
 
 ## Introduction
-
-This project is a simple web based **To‑Do list** built with [Flask](https://flask.palletsprojects.com/) and [TinyDB](https://tinydb.readthedocs.io/). It allows you to create tasks, mark them as complete, update the title and delete them. The data is stored in a small JSON file (`db.json`), making it lightweight and easy to run locally.
+This repository contains a lightweight to-do list web application built with [Flask](https://flask.palletsprojects.com/) and [TinyDB](https://tinydb.readthedocs.io/). The app lets you add tasks, edit their titles, mark them complete, and delete them—all stored in a simple JSON file for easy local development or demos.
 
 ## Project Structure
-
 ```
 Flask-TODO-APP/
-├── app.py             # Flask application and route definitions
+├── app.py             # Application factory and entry point
+├── routes.py          # Blueprint with all task routes
 ├── templates/
-│   └── index.html     # Main page template
-├── db.json            # TinyDB database file
-├── screenshot/        # Images showing the app in action
-└── README.md
+│   └── index.html     # Single-page UI for the to-do list
+├── db.json            # TinyDB data store (created automatically)
+├── screenshot/        # Example screenshots of the UI
+└── tests/             # Pytest-based smoke tests
 ```
 
-### Components
+## Components
+- **`app.py`** – Defines `create_app()` to initialize the Flask instance and register the routes blueprint; running the file directly starts the development server with reloading enabled. 【F:app.py†L1-L10】
+- **`routes.py`** – Declares the `todo` blueprint and all task-related endpoints: render the list, add new tasks, update titles, delete items, and mark tasks complete. TinyDB persists each task with an `id`, `title`, and `complete` flag. 【F:routes.py†L1-L34】
+- **`templates/index.html`** – Renders the UI using W3.CSS styling. It lists current tasks, shows completion state, and includes forms/buttons for add, edit (popup), complete, and delete actions. A small script handles the live clock and pre-fills the edit popup. 【F:templates/index.html†L15-L107】
+- **`db.json`** – JSON file created by TinyDB to store tasks. Deleting it resets the app’s data.
+- **`tests/`** – Placeholder for automated tests (none required to run the app).
 
-- **app.py** – Contains the Flask application. Routes include:
-  - `/` – Display all tasks.
-  - `/add` – Add a new task via POST form submission.
-  - `/update` – Update an existing task title.
-  - `/delete/<id>` – Remove a task from the database.
-  - `/complete/<id>` – Mark a task as completed.
-- **templates/index.html** – Front-end page built with W3.CSS. It lists current tasks and contains forms/buttons to add, edit, complete or delete them.
-- **db.json** – TinyDB file used to persist todo items. The database is automatically created when the app runs.
-- **screenshot/** – Sample screenshots of the user interface.
+## Prerequisites
+- Python 3.8 or newer
+- `pip` for installing dependencies
 
-## Setup
-
+## Setup Instructions
 1. **Clone the repository**
-
    ```bash
    git clone https://github.com/your-user/Flask-TODO-APP.git
    cd Flask-TODO-APP
    ```
-
-2. **Create a virtual environment (optional but recommended)**
-
+2. **(Optional) Create a virtual environment**
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
-
 3. **Install dependencies**
-
    ```bash
    pip install flask tinydb
    ```
 
-   These packages are the only requirements for running the app.
-
 ## Running the Application
-
-Run the Flask development server directly with:
-
+Start the Flask development server:
 ```bash
 python app.py
 ```
+Then open `http://127.0.0.1:5000/` in your browser to access the to-do list.
 
-By default the server runs on `http://127.0.0.1:5000/`. Open this URL in your browser and you will see the main To‑Do list interface.
+## How the App Works
+1. **Render the list (`GET /`)** – Fetches all tasks from TinyDB and renders `index.html` with the list. 【F:routes.py†L9-L13】
+2. **Add a task (`POST /add`)** – Submits a title from the form; assigns a random integer `id`, sets `complete=False`, stores in TinyDB, and redirects back to the list. 【F:routes.py†L15-L18】
+3. **Mark complete (`POST /complete/<id>`)** – Updates the `complete` flag to `True` for the given task. 【F:routes.py†L30-L33】
+4. **Edit a task (`POST /update`)** – The popup fills current text and task ID into hidden/input fields; the route updates the title in TinyDB. 【F:routes.py†L20-L25】【F:templates/index.html†L70-L105】
+5. **Delete a task (`POST /delete/<id>`)** – Removes the matching record from TinyDB. 【F:routes.py†L26-L29】
+6. **Front-end behavior** – Tasks are styled differently when complete, and the page shows a live datetime stamp. Buttons trigger form submissions or open the edit popup. 【F:templates/index.html†L37-L107】
 
-## Using the Application
+## Development Notes
+- The server runs with `debug=True` for automatic reloads during development. 【F:app.py†L7-L10】
+- All data lives in `db.json`; you can clear this file to reset the task list.
+- The app uses plain Flask and TinyDB with no additional build steps, so it is easy to experiment with.
 
-1. **Add a task** – Use the input box at the top of the list and press the `+` button.
-2. **Mark complete** – Click the checkmark next to a task to mark it finished. Completed tasks appear with a green background.
-3. **Edit a task** – Click the pencil icon to bring up the popup editor, then submit the form to update the title.
-4. **Delete a task** – Click the trash icon to remove a task from the list.
-
-Screenshots in the `screenshot` folder provide visual examples of these actions.
-
-## Notes
-
-- The database is stored in `db.json` in the project root. Clearing this file will reset the app’s state.
-- The app runs with `debug=True` inside `app.py`, so it will automatically reload when you modify the code during development.
-
-Enjoy building your own simple task manager with Flask!
+## Screenshots
+See the `screenshot/` directory for example images of the UI.
