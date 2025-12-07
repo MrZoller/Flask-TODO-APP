@@ -85,6 +85,7 @@
                 </header>
                 <form action="/add" method="POST">
                 <div class="w3-container">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <label for="title">Add Your Task Here</label>
                     <input class="w3-input w3-border" type="text" name="title" placeholder="Enter Todo..">
                     <button class="w3-button w3-circle w3-black" type="submit">+</button>
@@ -107,10 +108,12 @@
                         <div id = "todoitem">
                         <p id = "{{todo['id']}}">{{todo['title']}}</p>
                         <form action="/complete/{{todo['id']}}" method="POST" style="display:inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit"><i class="fa fa-check"></i></button>
                         </form>
                         <button onclick="openPopup({{todo['id']}})"><i class="fa fa-pencil"></i></button>
                         <form action="/delete/{{todo['id']}}" method="POST" style="display:inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit"><i class="fa fa-trash-o"></i></button>
                         </form>
                         </div>
@@ -119,6 +122,7 @@
                         <p id="{{todo['id']}}"><del>{{todo['title']}}</del></p>
                         <button onclick="openPopup({{todo['id']}})"><i class="fa fa-pencil"></i></button>
                         <form action="/delete/{{todo['id']}}" method="POST" style="display:inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit"><i class="fa fa-trash-o"></i></button>
                         </form>
                     </div>
@@ -131,6 +135,7 @@
     <div id="popupContainer">
   <div id="popupContent">
     <form action="/update" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" id="hiddenField" name="hiddenField">
         <input type="text" id="inputField" placeholder="Enter text" name="inputField">
         <button id="closeButton" type="submit">Update</button>

@@ -1,6 +1,13 @@
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
+class Session(dict):
+    pass
+
+
+session = Session()
+
+
 class Request:
     def __init__(self, form: Optional[Dict[str, Any]] = None):
         self.form = form or {}
@@ -43,6 +50,7 @@ class Flask:
         self.import_name = import_name
         self._routes: List[Tuple[str, List[str], Callable, str]] = []
         self.config: Dict[str, Any] = {}
+        self.jinja_env = type("JinjaEnv", (), {"globals": {}})()
 
     def register_blueprint(self, blueprint: Blueprint, url_prefix: str = ""):
         for rule, methods, func in blueprint.routes:
@@ -103,6 +111,10 @@ def redirect(location: str):
     return Response(status_code=302, headers={"Location": location})
 
 
+def abort(status_code: int):
+    return Response(status_code=status_code)
+
+
 def url_for(endpoint: str, **values):
     if endpoint == "todo.index":
         return "/"
@@ -141,4 +153,6 @@ __all__ = [
     "request",
     "redirect",
     "url_for",
+    "session",
+    "abort",
 ]
