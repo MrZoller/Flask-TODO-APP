@@ -2,8 +2,9 @@ import pytest
 from tinydb import TinyDB, Query
 from tinydb.storages import MemoryStorage
 
-from app import create_app
-import routes
+from flask_todo import create_app
+from flask_todo import routes
+
 
 @pytest.fixture(autouse=True)
 def setup_db():
@@ -11,6 +12,7 @@ def setup_db():
     routes.db = TinyDB(storage=MemoryStorage)
     yield
     routes.db.close()
+
 
 def get_client():
     app = create_app()
